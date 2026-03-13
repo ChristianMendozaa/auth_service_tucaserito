@@ -1,3 +1,5 @@
+import os
+import json
 import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -15,12 +17,18 @@ app = FastAPI(
     version="1.0.0",
 )
 
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS", '["http://localhost:3000", "https://www.tucaserito.com"]')
+try:
+    origins = json.loads(allowed_origins_env)
+except Exception:
+    origins = []
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001", "https://www.tucaserito.com"],
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "Accept", "Origin"],
 )
 
 app.include_router(router, prefix="/api/v1/auth", tags=["Auth"])

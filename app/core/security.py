@@ -50,6 +50,8 @@ def create_access_token(user_id: str, email: str) -> str:
         "email": email,
         "exp": expire,
         "iat": datetime.now(timezone.utc),
+        "iss": "tucaserito-auth-service",
+        "aud": "tucaserito-microservices",
         "app": "tu-caserito"
     }
     return jwt.encode(payload, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
@@ -57,7 +59,13 @@ def create_access_token(user_id: str, email: str) -> str:
 def decode_access_token(token: str) -> Optional[dict]:
     """Decodes and validates an internal JWT. Returns payload or None."""
     try:
-        payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
+        payload = jwt.decode(
+            token,
+            settings.JWT_SECRET,
+            algorithms=[settings.JWT_ALGORITHM],
+            issuer="tucaserito-auth-service",
+            audience="tucaserito-microservices"
+        )
         return payload
     except JWTError:
         return None
