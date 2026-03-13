@@ -17,7 +17,7 @@ app = FastAPI(
     version="1.0.0",
 )
 
-allowed_origins_env = os.getenv("ALLOWED_ORIGINS", '["http://localhost:3000", "https://www.tucaserito.com"]')
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS", '[ "https://www.tucaserito.com"]')
 try:
     origins = json.loads(allowed_origins_env)
 except Exception:
